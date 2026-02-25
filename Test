@@ -1,0 +1,41 @@
+USE basdb;
+GO
+
+
+DECLARE @sql NVARCHAR(MAX) = N'';
+
+SELECT @sql += 
+    'ALTER TABLE [' + SCHEMA_NAME(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + '];' + CHAR(13)
+FROM sys.foreign_keys fk
+JOIN sys.tables t 
+    ON fk.parent_object_id = t.object_id
+WHERE SCHEMA_NAME(t.schema_id) = 'basdbuser';
+
+SELECT @sql += 
+    'DROP TABLE [' + SCHEMA_NAME(schema_id) + '].[' + name + '];' + CHAR(13)
+FROM sys.tables
+WHERE SCHEMA_NAME(schema_id) = 'basdbuser';
+
+-- Review before executing
+PRINT @sql;
+
+-- Uncomment after review
+-- EXEC sp_executesql @sql;
+
+
+
+
+
+
+
+
+_______________________________
+DECLARE @sql NVARCHAR(MAX) = N'';
+
+SELECT @sql += 
+    'DROP TABLE [basdbuser].[' + name + '];' + CHAR(13)
+FROM sys.tables
+WHERE SCHEMA_NAME(schema_id) = 'basdbuser';
+
+PRINT @sql;
+-- EXEC sp_executesql @sql;
