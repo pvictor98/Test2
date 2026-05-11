@@ -1,0 +1,14 @@
+ELK
+
+  logging_configuration:
+    logging_type: default
+    mon_log_parse: true
+    mon_log_service_endpoint: 'https://SITLXDVELAP090.saibsit.com:9200'
+    private_logging_enabled: true
+
+ecm_configuration:
+  cpe:
+    logging_enabled: true
+
+  navigator_configuration:
+    logging_enabled: true
