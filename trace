@@ -1,0 +1,4 @@
+logs:
+  max_files: 30
+  max_filesize: 100
+  trace_specification: '*=info:com.ibm.bpm.embeddedecm.*=all:com.ibm.bpm.integration.*=all:com.ibm.bpm.auth.*=all:com.lombardisoftware.component.ecmconnector.*=all:com.ibm.ws.jaxws.*=all:org.apache.cxf.*=all:com.ibm.ws.security.*=all:com.ibm.oauth.*=all:com.ibm.wsspi.security.oauth20.*=all:com.ibm.ws.webcontainer.security.*=all:io.openliberty.security.*=all:com.ibm.ws.webcontainer.servlet.*=all:com.ibm.ws.webcontainer.security.*=all:io.openliberty.security.*=all'
