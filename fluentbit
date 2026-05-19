@@ -3,6 +3,21 @@ fluentbit
 [2026/05/19 07:13:37.723] [error] [config] es: unknown configuration property 'http_header'. The following properties are allowed: index, type, suppress_type_name, http_user, http_passwd, http_api_key, compress, cloud_id, cloud_auth, aws_auth, aws_region, aws_sts_endpoint, aws_role_arn, aws_external_id, aws_service_name, aws_profile, logstash_format, logstash_prefix, logstash_prefix_separator, logstash_prefix_key, logstash_dateformat, time_key, time_key_format, time_key_nanos, include_tag_key, tag_key, buffer_size, path, pipeline, generate_id, write_operation, id_key, replace_dots, current_time_index, trace_output, and trace_error.
 [2026/05/19 07:13:37.723] [ help] try the command: /fluent-bit/bin/fluent-bit -o es -h
 
+curl -k \
+-H "Authorization: ApiKey <YOUR_API_KEY>" \
+-H "Content-Type: application/json" \
+"https://test.test.com:9200/cp4ba-bawuat-index/_search?pretty" \
+-d '{
+  "size": 10,
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc"
+      }
+    }
+  ]
+}'
+
 
 kind: ConfigMap
 apiVersion: v1
