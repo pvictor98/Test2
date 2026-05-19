@@ -1,0 +1,86 @@
+fluentbit
+
+[2026/05/19 07:13:37.723] [error] [config] es: unknown configuration property 'http_header'. The following properties are allowed: index, type, suppress_type_name, http_user, http_passwd, http_api_key, compress, cloud_id, cloud_auth, aws_auth, aws_region, aws_sts_endpoint, aws_role_arn, aws_external_id, aws_service_name, aws_profile, logstash_format, logstash_prefix, logstash_prefix_separator, logstash_prefix_key, logstash_dateformat, time_key, time_key_format, time_key_nanos, include_tag_key, tag_key, buffer_size, path, pipeline, generate_id, write_operation, id_key, replace_dots, current_time_index, trace_output, and trace_error.
+[2026/05/19 07:13:37.723] [ help] try the command: /fluent-bit/bin/fluent-bit -o es -h
+
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fluent-bit
+  namespace: openshift-logging
+  uid: 0b4dba24-8376-4e2b-8db4-51c3d50b8165
+  resourceVersion: '207536726'
+  creationTimestamp: '2026-05-13T08:46:57Z'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: v1
+      time: '2026-05-13T08:51:04Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:data':
+          .: {}
+          'f:fluent-bit.conf': {}
+          'f:parsers.conf': {}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon Off
+        Flush 1
+        Log_Level info
+        Parsers_File parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+
+    [INPUT]
+        Name tail
+        # Collecting specifically from BAStudio containers in CP4BA namespace
+        Path /var/log/containers/icp4adeploy-bastudio-deployment-*_bawuat_bastudio-container-*.log
+        # Using a simplified tag to avoid K8s filter pattern errors
+        Tag cp4ba.bastudio
+        multiline.parser cri
+        Mem_Buf_Limit 50MB
+        Skip_Long_Lines On
+        Read_from_Head On
+
+    # STEP 1: Look inside the "log" string and parse the Liberty JSON
+    [FILTER]
+        Name         parser
+        Match        bawuat.*
+        Key_Name     log
+        Parser       json
+        Reserve_Data True
+
+    # STEP 2: Clean up the record by removing the redundant "log" string
+    [FILTER]
+        Name         record_modifier
+        Match        bawuat.*
+        Remove_key   log
+
+    [OUTPUT]
+        Name stdout
+        Match *
+        Format json_lines
+
+    [OUTPUT]
+        Name es
+        Match cp4ba.*
+        Host https://test.test.com
+        Port 9200
+        HTTP_Header Authorization ApiKey ${ES_API_KEY}
+        TLS On
+        TLS.Verify On
+        TLS.CA_File /etc/fluent-bit/certs/ca.crt
+        Generate_ID On
+        Suppress_Type_Name On
+        Index cp4ba-bawuat-index
+        Retry_Limit False
+        Buffer_Size 8M
+  parsers.conf: |
+    [PARSER]
+        Name        json
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
