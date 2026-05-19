@@ -13,6 +13,10 @@ fluentbit
 
 curl -k \
 -H "Authorization: ApiKey V3p4aUlKNEI0OUFPcnF0aWFaTXg6bVZubC1MZlhidlZILU0tOGRnNFJrZw==" \
+"https://SITLXDVELAP083.saibsit.com:920/_cat/indices/cp4ba*?v"
+
+curl -k \
+-H "Authorization: ApiKey V3p4aUlKNEI0OUFPcnF0aWFaTXg6bVZubC1MZlhidlZILU0tOGRnNFJrZw==" \
 -H "Content-Type: application/json" \
 "https://SITLXDVELAP083.saibsit.com:9200/cp4ba-bawuat-index/_search?pretty" \
 -d '{
